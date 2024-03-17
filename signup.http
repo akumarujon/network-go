@@ -1,0 +1,8 @@
+POST http://localhost:3000/signup
+Content-Type: application/x-www-form-urlencoded
+
+username = tohirdev &
+password = 1234e &
+email = tohirdevd@gmail.com
+
+###
