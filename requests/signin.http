@@ -1,0 +1,7 @@
+POST http://localhost:3000/signin
+Content-Type: application/x-www-form-urlencoded
+
+username = tohirdev &
+password = 1234e
+
+###

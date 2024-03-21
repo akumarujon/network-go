@@ -1,0 +1,6 @@
+POST http://localhost:3000/new
+Content-Type: application/x-www-form-urlencoded
+Token: 402ad67b-e41e-11ee-87f4-507b9d6217a1
+
+title = "Hello World" &
+body = "Another Hello World"
