@@ -1,5 +1,5 @@
-PATCH http://localhost:3000/posts/1
+PATCH http://localhost:3000/posts/2
 Content-Type: application/x-www-form-urlencoded
 Token: 3c7fe7bb-e828-11ee-ac26-507b9d6217a1
 
-body = "Yes Hello World"
+body = "OOO Hello World"
