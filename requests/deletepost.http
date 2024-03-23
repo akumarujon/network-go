@@ -1,0 +1,4 @@
+DELETE http://localhost:3000/posts/1
+Content-Type: application/x-www-form-urlencoded
+Token: 3c7fe7bb-e828-11ee-ac26-507b9d6217a1
+
