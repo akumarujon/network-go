@@ -11,28 +11,7 @@ import (
 )
 
 func HomePage(c *fiber.Ctx) error {
-	var headers map[string][]string
-	headers = c.GetReqHeaders()
-
-	token := headers["Token"]
-
-	if len(token) == 0 {
-		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
-			"status":  http.StatusUnauthorized,
-			"message": "There is no token in headers.",
-		})
-	}
-
 	db := database.GetDB()
-	var user database.User
-	err := db.Where("token = ?", token).First(&user)
-
-	if errors.Is(err.Error, gorm.ErrRecordNotFound) {
-		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
-			"status":  http.StatusUnauthorized,
-			"message": "Token might be expired, Sign-in again or Sign-up to create a new account.",
-		})
-	}
 
 	var posts []database.Post
 	db.Model(&database.Post{}).Preload("Author").Find(&posts)
@@ -48,15 +27,7 @@ func NewPost(c *fiber.Ctx) error {
 
 	var headers map[string][]string
 	headers = c.GetReqHeaders()
-
 	token := headers["Token"]
-
-	if len(token) == 0 {
-		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
-			"status":  http.StatusUnauthorized,
-			"message": "Token is not found.",
-		})
-	}
 
 	if post.Body == "" || post.Title == "" {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
@@ -91,38 +62,12 @@ func NewPost(c *fiber.Ctx) error {
 }
 
 func GetPost(c *fiber.Ctx) error {
-	var headers map[string][]string
-	headers = c.GetReqHeaders()
-
-	log.Println("Headers:", headers)
-	token := headers["Token"]
-	log.Println("Token:", token)
-
-	if len(token) == 0 {
-		log.Println("No token in headers")
-		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
-			"status":  http.StatusUnauthorized,
-			"message": "There is no token in headers.",
-		})
-	}
-
 	db := database.GetDB()
-	var user database.User
-
-	err := db.Where("token = ?", token[0]).First(&user)
-	slog.Info("User: ", user)
-	if errors.Is(err.Error, gorm.ErrRecordNotFound) {
-		log.Println("Token might be expired, Sign-in again or Sign-up to create a new account.")
-		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
-			"status":  http.StatusUnauthorized,
-			"message": "Token might be expired, Sign-in again or Sign-up to create a new account.",
-		})
-	}
 
 	var post database.Post
 	id := c.Params("id")
 
-	err = db.Where("id = ?", id).Preload("Author").First(&post)
+	err := db.Where("id = ?", id).Preload("Author").First(&post)
 
 	slog.Info("Post: ", post)
 
@@ -138,28 +83,7 @@ func GetPost(c *fiber.Ctx) error {
 }
 
 func UpdatePost(c *fiber.Ctx) error {
-	var headers map[string][]string
-	headers = c.GetReqHeaders()
-
-	token := headers["Token"]
-
-	if len(token) == 0 {
-		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
-			"status":  http.StatusUnauthorized,
-			"message": "There is no token in headers.",
-		})
-	}
-
 	db := database.GetDB()
-	var user database.User
-	err := db.Where("token = ?", token[0]).First(&user)
-	if errors.Is(err.Error, gorm.ErrRecordNotFound) {
-		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
-			"status":  http.StatusUnauthorized,
-			"message": "Token might be expired, Sign-in again or Sign-up to create a new account.",
-		})
-	}
-
 	var post database.Post
 	id := c.Params("id")
 
@@ -172,7 +96,7 @@ func UpdatePost(c *fiber.Ctx) error {
 		})
 	}
 
-	err = db.Where("id = ?", id).First(&post)
+	err := db.Where("id = ?", id).First(&post)
 	if errors.Is(err.Error, gorm.ErrRecordNotFound) {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{
 			"status":  http.StatusNotFound,
@@ -201,33 +125,12 @@ func UpdatePost(c *fiber.Ctx) error {
 }
 
 func DeletePost(c *fiber.Ctx) error {
-	var headers map[string][]string
-	headers = c.GetReqHeaders()
-
-	token := headers["Token"]
-
-	if len(token) == 0 {
-		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
-			"status":  http.StatusUnauthorized,
-			"message": "There is no token in headers.",
-		})
-	}
-
 	db := database.GetDB()
-
-	var user database.User
-	err := db.Where("token = ?", token[0]).First(&user)
-	if errors.Is(err.Error, gorm.ErrRecordNotFound) {
-		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
-			"status":  http.StatusUnauthorized,
-			"message": "Token might be expired, Sign-in again or Sign-up to create a new account.",
-		})
-	}
 
 	var post database.Post
 	id := c.Params("id")
 
-	err = db.Where("id = ?", id).First(&post)
+	err := db.Where("id = ?", id).First(&post)
 	if errors.Is(err.Error, gorm.ErrRecordNotFound) {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{
 			"status":  http.StatusNotFound,

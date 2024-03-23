@@ -7,18 +7,22 @@ import (
 )
 
 func Setup(app *fiber.App) {
+	// User auth
+	app.Post("/signin", SignIn)
+	app.Post("/signup", SignUp)
+
+	// Middlewares
+	app.Use(Auth())
+	app.Use(cors.New())
+
+	// Routes
 	app.Get("/", HomePage)
 	app.Get("/posts/:id", GetPost)
 	app.Patch("/posts/:id", UpdatePost)
 	app.Delete("/posts/:id", DeletePost)
-
-	app.Post("/signin", SignIn)
-	app.Post("/signup", SignUp)
 	app.Post("/new", NewPost)
 
 	app.Get("/confirm/:token", ConfirmEmail)
-
-	app.Use(cors.New())
 
 	app.Get("/swagger/swagger.json", func(c *fiber.Ctx) error {
 		return c.SendFile("./docs/swagger.json")
