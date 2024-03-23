@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"fmt"
+	"log/slog"
 	"net/smtp"
 )
 
@@ -20,7 +20,7 @@ func SendEmail(email, url string) error {
 
 	to := []string{email}
 
-	fmt.Println(to)
+	slog.Info("Sending email to: ", to)
 	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
 
 	if err != nil {

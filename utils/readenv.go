@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"strings"
 )
@@ -12,7 +13,7 @@ func ReadENV(key string) (value string) {
 	path, err := os.Getwd()
 
 	if err != nil {
-		fmt.Println("Error occurred while getting path:", err.Error())
+		slog.Error("Error occurred while getting path:", err.Error())
 	}
 
 	_, ok := strings.CutSuffix(path, "/")
@@ -26,7 +27,7 @@ func ReadENV(key string) (value string) {
 	content, err := os.ReadFile(filepath)
 
 	if err != nil {
-		fmt.Println("Error occurred while reading file ", filepath, " error: ", err.Error())
+		slog.Error("Error occurred while reading file ", filepath, " error: ", err.Error())
 	}
 
 	lines := strings.Split(string(content[:]), "\n")

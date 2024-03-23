@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"log/slog"
 )
 
 type User struct {
@@ -22,13 +23,14 @@ type Post struct {
 	Title    string `json:"title"`
 	Body     string `json:"body"`
 	AuthorID uint   `json:"author_id"`
+	Author   User   `gorm:"foreignKey:AuthorID" json:"author"`
 }
 
 func GetDB() *gorm.DB {
 	db, err := gorm.Open(sqlite.Open("test.database"), &gorm.Config{})
 
 	if err != nil {
-		panic("failed to connect database")
+		slog.Error("Failed to connect to database: ", err)
 	}
 
 	return db
