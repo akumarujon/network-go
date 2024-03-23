@@ -9,6 +9,8 @@ import (
 func Setup(app *fiber.App) {
 	app.Get("/", HomePage)
 	app.Get("/posts/:id", GetPost)
+	app.Patch("/posts/:id", UpdatePost)
+	app.Delete("/posts/:id", DeletePost)
 
 	app.Post("/signin", SignIn)
 	app.Post("/signup", SignUp)
