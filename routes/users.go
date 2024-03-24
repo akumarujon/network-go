@@ -182,3 +182,39 @@ func ConfirmEmail(c *fiber.Ctx) error {
 		"message": "User has been confirmed",
 	})
 }
+
+func GetUsers(c *fiber.Ctx) error {
+	db := database.GetDB()
+
+	var users []database.User
+
+	db.Preload("Posts").Find(&users)
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"status":  http.StatusOK,
+		"message": "Users retrieved successfully",
+		"users":   users,
+	})
+}
+
+func GetUser(c *fiber.Ctx) error {
+	db := database.GetDB()
+
+	id := c.Params("id")
+
+	var user database.User
+
+	err := db.Preload("Posts").Where("id = ?", id).First(&user)
+
+	if errors.Is(err.Error, gorm.ErrRecordNotFound) {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"status":  http.StatusNotFound,
+			"message": "User with ID " + id + " not found.",
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"status":  http.StatusOK,
+		"message": "User retrieved successfully",
+		"user":    user,
+	})
+}
