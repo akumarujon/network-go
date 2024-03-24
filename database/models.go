@@ -9,12 +9,12 @@ import (
 
 type User struct {
 	gorm.Model
-	Username    string    `gorm:"unique" json:"username"`
+	Username    string    `gorm:"unique" gorm:"index" gorm:"not null" json:"username"`
 	Password    string    `json:"password"`
 	Email       string    `gorm:"unique" json:"email"`
 	Picture     string    `json:"picture"`
 	Posts       []Post    `gorm:"foreignKey:AuthorID" json:"posts"`
-	Token       uuid.UUID `json:"token"`
+	Token       uuid.UUID `gorm:"index" json:"token"`
 	IsConfirmed bool      `json:"is_confirmed"`
 }
 
@@ -27,7 +27,10 @@ type Post struct {
 }
 
 func GetDB() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("test.database"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("test.database"), &gorm.Config{
+		SkipDefaultTransaction: true,
+		PrepareStmt:            true,
+	})
 
 	if err != nil {
 		slog.Error("Failed to connect to database: ", err)
@@ -47,4 +50,10 @@ func Migrate() {
 		panic("failed to migrate database: Post")
 	}
 
+}
+
+func Drop() {
+	db := GetDB()
+	db.Migrator().DropTable(&User{})
+	db.Migrator().DropTable(&Post{})
 }
