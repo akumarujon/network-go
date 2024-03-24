@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 	"interview/database"
 	"net/http"
+	"strconv"
 )
 
 func Auth() fiber.Handler {
@@ -33,6 +34,7 @@ func Auth() fiber.Handler {
 			})
 		}
 
+		c.Append("is_confirmed", strconv.FormatBool(user.IsConfirmed))
 		return c.Next()
 	}
 }
