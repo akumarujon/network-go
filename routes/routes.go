@@ -11,6 +11,8 @@ func Setup(app *fiber.App) {
 	app.Post("/signin", SignIn)
 	app.Post("/signup", SignUp)
 
+	app.Get("/confirm/:token", ConfirmEmail)
+
 	// Middlewares
 	app.Use(Auth())
 	app.Use(cors.New())
@@ -21,8 +23,6 @@ func Setup(app *fiber.App) {
 	app.Patch("/posts/:id", UpdatePost)
 	app.Delete("/posts/:id", DeletePost)
 	app.Post("/new", NewPost)
-
-	app.Get("/confirm/:token", ConfirmEmail)
 
 	app.Get("/swagger/swagger.json", func(c *fiber.Ctx) error {
 		return c.SendFile("./docs/swagger.json")
