@@ -218,3 +218,89 @@ func GetUser(c *fiber.Ctx) error {
 		"user":    user,
 	})
 }
+
+func UpdateUser(c *fiber.Ctx) error {
+	db := database.GetDB()
+
+	id := c.Params("id")
+
+	var body database.User
+	if err := c.BodyParser(&body); err != nil {
+		return err
+	}
+
+	var user database.User
+	if err := db.Where("id = ?", id).First(&user).Error; err != nil {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"status":  http.StatusNotFound,
+			"message": "User with ID " + id + " not found.",
+		})
+	}
+
+	var headers map[string][]string
+	headers = c.GetReqHeaders()
+
+	token := headers["Token"][0]
+
+	if token != user.Token.String() {
+		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
+			"status":  http.StatusUnauthorized,
+			"message": "This is not your profile.",
+		})
+	}
+
+	if body.Username != "" {
+		user.Username = body.Username
+	}
+
+	if body.Password != "" {
+		user.Password = body.Password
+	}
+
+	if body.Email != "" {
+		user.Email = body.Email
+	}
+
+	db.Save(&user)
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"status":  http.StatusOK,
+		"message": "User updated successfully",
+		"user":    user,
+	})
+}
+
+func DeleteUser(c *fiber.Ctx) error {
+	db := database.GetDB()
+
+	id := c.Params("id")
+
+	var user database.User
+	err := db.Where("id = ?", id).First(&user)
+
+	if errors.Is(err.Error, gorm.ErrRecordNotFound) {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"status":  http.StatusNotFound,
+			"message": "User with ID " + id + " not found.",
+		})
+	}
+
+	var headers map[string][]string
+	headers = c.GetReqHeaders()
+
+	token := headers["Token"][0]
+
+	if token != user.Token.String() {
+		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
+			"status":  http.StatusUnauthorized,
+			"message": "This is not your profile.",
+		})
+	}
+
+	db.Delete(&user)
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"status":  http.StatusOK,
+		"message": "User deleted successfully",
+	})
+}

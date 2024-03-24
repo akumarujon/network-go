@@ -26,6 +26,8 @@ func Setup(app *fiber.App) {
 
 	app.Get("/users", GetUsers)
 	app.Get("/users/:id", GetUser)
+	app.Patch("/users/:id", UpdateUser)
+	app.Delete("/users/:id", DeleteUser)
 
 	app.Get("/swagger/swagger.json", func(c *fiber.Ctx) error {
 		return c.SendFile("./docs/swagger.json")
