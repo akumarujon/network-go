@@ -2,6 +2,7 @@ package routes
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -61,6 +62,8 @@ func SignIn(c *fiber.Ctx) error {
 }
 
 func SignUp(c *fiber.Ctx) error {
+
+	fmt.Println("Base URL: ", c.BaseURL())
 	var user database.User
 	if err := c.BodyParser(&user); err != nil {
 		return err
@@ -94,7 +97,19 @@ func SignUp(c *fiber.Ctx) error {
 		})
 	}
 
-	user.Picture = "default.jpg"
+	file, err := c.FormFile("picture")
+
+	if file != nil || err == nil {
+		err = c.SaveFile(file, "assets/"+file.Filename)
+		if err != nil {
+			slog.Error("Error occurred while saving a file: ", err.Error())
+		}
+
+		user.Picture = file.Filename
+		slog.Info("File: ", user.Picture)
+	} else {
+		user.Picture = "default.jpg"
+	}
 
 	token, err := uuid.NewUUID()
 
@@ -108,6 +123,9 @@ func SignUp(c *fiber.Ctx) error {
 	result = db.Create(&user)
 
 	if result.Error != nil {
+		c.Set("Token", token.String())
+		c.Set("IsConfirmed", strconv.FormatBool(user.IsConfirmed))
+		c.Set("Content-Type", "application/json")
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"status":  http.StatusInternalServerError,
 			"message": result.Error.Error(),
@@ -115,7 +133,7 @@ func SignUp(c *fiber.Ctx) error {
 	}
 	db.Commit()
 
-	url := "http://localhost:3000/confirm/" + token.String()
+	url := c.BaseURL() + "/confirm/" + token.String()
 	slog.Info("Email: ", user.Email)
 	slog.Info("URL: ", url)
 	err = utils.SendEmail(user.Email, url)
