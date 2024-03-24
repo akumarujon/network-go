@@ -1,0 +1,5 @@
+PATCH http://localhost:3000/users/12
+Content-Type: application/x-www-form-urlencoded
+Token: b24e5ec7-e9b7-11ee-8be5-507b9d6217a1
+
+username = "kei"
