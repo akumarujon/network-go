@@ -27,10 +27,7 @@ type Post struct {
 }
 
 func GetDB() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("test.database"), &gorm.Config{
-		SkipDefaultTransaction: true,
-		PrepareStmt:            true,
-	})
+	db, err := gorm.Open(sqlite.Open("test.database"), &gorm.Config{})
 
 	if err != nil {
 		slog.Error("Failed to connect to database: ", err)
