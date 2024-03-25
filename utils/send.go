@@ -3,11 +3,12 @@ package utils
 import (
 	"log/slog"
 	"net/smtp"
+	"os"
 )
 
 func SendEmail(email, url string) error {
-	password := ReadENV("password")
-	from := ReadENV("from")
+	password := os.Getenv("password")
+	from := os.Getenv("from")
 
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
