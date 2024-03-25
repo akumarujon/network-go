@@ -2,8 +2,9 @@ package database
 
 import (
 	"github.com/google/uuid"
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"interview/utils"
 	"log/slog"
 )
 
@@ -27,7 +28,7 @@ type Post struct {
 }
 
 func GetDB() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("test.database"), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(utils.ReadENV("postgres")), &gorm.Config{})
 
 	if err != nil {
 		slog.Error("Failed to connect to database: ", err)
@@ -47,10 +48,4 @@ func Migrate() {
 		panic("failed to migrate database: Post")
 	}
 
-}
-
-func Drop() {
-	db := GetDB()
-	db.Migrator().DropTable(&User{})
-	db.Migrator().DropTable(&Post{})
 }
