@@ -4,8 +4,8 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"interview/utils"
 	"log/slog"
-	"os"
 )
 
 type User struct {
@@ -28,7 +28,7 @@ type Post struct {
 }
 
 func GetDB() *gorm.DB {
-	db, err := gorm.Open(postgres.Open(os.Getenv("postgres")), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(utils.Database), &gorm.Config{})
 
 	if err != nil {
 		slog.Error("Failed to connect to database: ", err)
