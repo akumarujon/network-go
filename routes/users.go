@@ -69,7 +69,7 @@ func SignUp(c *fiber.Ctx) error {
 		return err
 	}
 
-	if user.Username == "" || user.Password == "" || user.Email == "" {
+	if user.Username == "" || user.Password == "" || user.Email == "" || user.FirstName == "" {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"status":  http.StatusBadRequest,
 			"message": "All fields are required",
