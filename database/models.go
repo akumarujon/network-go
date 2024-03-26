@@ -12,7 +12,9 @@ type User struct {
 	gorm.Model
 	Username    string    `gorm:"unique" gorm:"index" gorm:"not null" json:"username"`
 	Password    string    `json:"password"`
-	Email       string    `gorm:"unique" json:"email"`
+	Email       string    `gorm:"unique" json:"email" gorm:"index"`
+	FirstName   string    `json:"first_name"`
+	LastName    string    `json:"last_name"`
 	Picture     string    `json:"picture"`
 	Posts       []Post    `gorm:"foreignKey:AuthorID" json:"posts"`
 	Token       uuid.UUID `gorm:"index" json:"token"`
