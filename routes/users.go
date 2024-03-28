@@ -26,9 +26,10 @@ func SignIn(c *fiber.Ctx) error {
 		})
 	}
 
+	db := database.Database
 
 	var userFromDB database.User
-	result := db.Where("username = ?", user.Username, user.Email).First(&userFromDB)
+	result := db.Where("username = ? OR email = ?", user.Username, user.Email).First(&userFromDB)
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{
@@ -57,7 +58,6 @@ func SignIn(c *fiber.Ctx) error {
 		"status":  http.StatusOK,
 		"message": "User signed in successfully",
 	})
-
 }
 
 func SignUp(c *fiber.Ctx) error {
