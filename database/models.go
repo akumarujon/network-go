@@ -40,7 +40,7 @@ func GetDB() *gorm.DB {
 }
 
 func Migrate() {
-	db := GetDB()
+	db := Database
 	err := db.AutoMigrate(&User{})
 	if err != nil {
 		panic("failed to migrate database: User")
@@ -51,3 +51,5 @@ func Migrate() {
 	}
 
 }
+
+var Database = GetDB()

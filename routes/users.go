@@ -26,7 +26,6 @@ func SignIn(c *fiber.Ctx) error {
 		})
 	}
 
-	db := database.GetDB()
 
 	var userFromDB database.User
 	result := db.Where("username = ?", user.Username, user.Email).First(&userFromDB)
@@ -76,7 +75,7 @@ func SignUp(c *fiber.Ctx) error {
 		})
 	}
 
-	db := database.GetDB()
+	db := database.Database
 
 	var userFromDB database.User
 	result := db.Where("username = ? OR email = ?", user.Username, user.Email).First(&userFromDB)
@@ -153,7 +152,7 @@ func SignUp(c *fiber.Ctx) error {
 func ConfirmEmail(c *fiber.Ctx) error {
 	token := c.Params("token")
 
-	db := database.GetDB()
+	db := database.Database
 
 	var user database.User
 
@@ -184,7 +183,7 @@ func ConfirmEmail(c *fiber.Ctx) error {
 }
 
 func GetUsers(c *fiber.Ctx) error {
-	db := database.GetDB()
+	db := database.Database
 
 	var users []database.User
 
@@ -197,7 +196,7 @@ func GetUsers(c *fiber.Ctx) error {
 }
 
 func GetUser(c *fiber.Ctx) error {
-	db := database.GetDB()
+	db := database.Database
 
 	id := c.Params("id")
 
@@ -220,7 +219,7 @@ func GetUser(c *fiber.Ctx) error {
 }
 
 func UpdateUser(c *fiber.Ctx) error {
-	db := database.GetDB()
+	db := database.Database
 
 	id := c.Params("id")
 
@@ -271,7 +270,7 @@ func UpdateUser(c *fiber.Ctx) error {
 }
 
 func DeleteUser(c *fiber.Ctx) error {
-	db := database.GetDB()
+	db := database.Database
 
 	id := c.Params("id")
 

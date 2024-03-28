@@ -24,7 +24,7 @@ func Auth() fiber.Handler {
 			})
 		}
 
-		db := database.GetDB()
+		db := database.Database
 		var user database.User
 		err := db.Where("token = ?", token[0]).First(&user)
 		if errors.Is(err.Error, gorm.ErrRecordNotFound) {

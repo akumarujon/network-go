@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/gofiber/fiber/v2"
 	"interview/database"
 	"interview/routes"
@@ -16,6 +17,18 @@ func main() {
 	if err != nil {
 		slog.Error("Failed to set GOMAXPROCS: ", err)
 	}
+
+	connection, err := database.Database.DB()
+	if err != nil {
+		slog.Error("Failed to connect to database: ", err)
+	}
+
+	defer func(connection *sql.DB) {
+		err := connection.Close()
+		if err != nil {
+			slog.Error("Failed to close database connection: ", err)
+		}
+	}(connection)
 
 	database.Migrate()
 	app := fiber.New(fiber.Config{

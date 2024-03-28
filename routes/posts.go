@@ -11,7 +11,7 @@ import (
 )
 
 func HomePage(c *fiber.Ctx) error {
-	db := database.GetDB()
+	db := database.Database
 
 	var posts []database.Post
 	db.Model(&database.Post{}).Preload("Author").Find(&posts)
@@ -36,7 +36,7 @@ func NewPost(c *fiber.Ctx) error {
 		})
 	}
 
-	db := database.GetDB()
+	db := database.Database
 
 	var tokenUser database.User
 	db.Where("token = ?", token[0]).First(&tokenUser)
@@ -62,7 +62,8 @@ func NewPost(c *fiber.Ctx) error {
 }
 
 func GetPost(c *fiber.Ctx) error {
-	db := database.GetDB()
+
+	db := database.Database
 
 	var post database.Post
 	id := c.Params("id")
@@ -83,7 +84,7 @@ func GetPost(c *fiber.Ctx) error {
 }
 
 func UpdatePost(c *fiber.Ctx) error {
-	db := database.GetDB()
+	db := database.Database
 	var post database.Post
 	id := c.Params("id")
 
@@ -125,7 +126,7 @@ func UpdatePost(c *fiber.Ctx) error {
 }
 
 func DeletePost(c *fiber.Ctx) error {
-	db := database.GetDB()
+	db := database.Database
 
 	var post database.Post
 	id := c.Params("id")
