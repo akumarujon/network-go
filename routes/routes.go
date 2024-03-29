@@ -7,6 +7,8 @@ import (
 )
 
 func Setup(app *fiber.App) {
+	app.Use(cors.New())
+
 	// User auth
 	app.Post("/signin", SignIn)
 	app.Post("/signup", SignUp)
@@ -15,7 +17,6 @@ func Setup(app *fiber.App) {
 
 	// Middlewares
 	app.Use(Auth())
-	app.Use(cors.New())
 
 	// Routes
 	app.Get("/", HomePage)
