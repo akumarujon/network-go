@@ -53,10 +53,13 @@ func SignIn(c *fiber.Ctx) error {
 	userFromDB.Token = newToken
 	db.Save(&userFromDB)
 
-	c.Append("token", newToken.String())
+	c.Append("Token", newToken.String())
+	c.Append("is_confirmed", strconv.FormatBool(userFromDB.IsConfirmed))
 	return c.Status(http.StatusOK).JSON(fiber.Map{
-		"status":  http.StatusOK,
-		"message": "User signed in successfully",
+		"status":       http.StatusOK,
+		"message":      "User signed in successfully",
+		"token":        newToken.String(),
+		"is_confirmed": strconv.FormatBool(userFromDB.IsConfirmed),
 	})
 }
 
@@ -144,8 +147,10 @@ func SignUp(c *fiber.Ctx) error {
 	c.Append("is_confirmed", strconv.FormatBool(user.IsConfirmed))
 	c.Append("token", token.String())
 	return c.Status(http.StatusCreated).JSON(fiber.Map{
-		"status":  http.StatusCreated,
-		"message": "User created successfully",
+		"status":       http.StatusCreated,
+		"message":      "User created successfully",
+		"token":        token.String(),
+		"is_confirmed": strconv.FormatBool(user.IsConfirmed),
 	})
 }
 
