@@ -83,24 +83,24 @@ To use these endpoints, send HTTP requests to the appropriate URL with the
 necessary data. Make sure to include any required authentication tokens in your
 requests for protected endpoints.
 
-Example using curl:
-
-# Get all posts
-
+### Example using curl:
 > Keep in mind, that every single route except the ones stated in
 > `Authentication` section requires a UUID token in Headers.
+
+
+## Get all posts
 
 ```bash
 curl http://localhost:8080/ -H "Token: UUID"
 ```
 
-# Create a new post
+## Create a new post
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -H "Token: UUID" -d '{"title":"My New Post","content":"This is the content of my post"}' http://localhost:8080/new
 ```
 
-# Get a specific user's profile
+## Get a specific user's profile
 
 ```bash
 curl http://localhost:8080/users/123 -H "Token: UUID"
